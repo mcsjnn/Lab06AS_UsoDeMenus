@@ -1,9 +1,14 @@
 package com.example.lab06
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -23,7 +28,12 @@ import com.example.lab06.screens.MenuScreen
 import com.example.lab06.ui.theme.Lab06Theme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import com.example.lab06.screens.BuildScreen
+import com.example.lab06.screens.DeleteScreen
+import com.example.lab06.screens.FavoriteScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,15 +53,11 @@ fun CustomScaffold() {
     var clickCount by remember { mutableIntStateOf(0) }
 
     Scaffold(
-        // Barra superior
         topBar = { CustomTopBar(navController) },
-        // Barra inferior
         bottomBar = { CustomBottomBar(navController) },
-        // Botón flotante personalizado
         floatingActionButton = {
-            CustomFAB(onClick = { clickCount++ })
+            CustomFAB(onClick = { clickCount++ }) // Incrementar el contador al hacer clic
         },
-        // Contenido principal
         content = { innerPadding ->
             NavHost(
                 navController = navController,
@@ -59,17 +65,38 @@ fun CustomScaffold() {
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable("main") {
-                    MainScreen() // Pantalla principal básica
+                    CustomContent(padding = innerPadding, clickCount = clickCount) // Pasar el contador
                 }
-                composable("profile") {
-                    UserProfileScreen() // Pantalla de perfil
-                }
-                composable("menu") {
-                    MenuScreen() // Pantalla de menú
+                composable("profile") { UserProfileScreen() }
+                composable("menu") { MenuScreen() }
+                composable("build") { BuildScreen() }
+                composable("favorite") { FavoriteScreen() }
+                composable("delete") {
+                    DeleteScreen(onDeleteConfirmed = {
+                        Log.d("Delete", "Elemento eliminado")
+                    })
                 }
             }
         }
     )
+}
+
+@Composable
+fun CustomContent(padding: PaddingValues, clickCount: Int) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Has presionado el botón $clickCount veces",
+            fontSize = 20.sp,
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(text = "My app content")
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -154,12 +181,4 @@ fun CustomFAB(onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun MainScreen() {
-    // Pantalla principal sencilla
-    Text(
-        text = "Pantalla Principal",
-        modifier = Modifier.padding(16.dp),
-        fontSize = 20.sp
-    )
-}
+

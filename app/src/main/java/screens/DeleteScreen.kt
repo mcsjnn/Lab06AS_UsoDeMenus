@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -13,19 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DeleteScreen() {
+fun DeleteScreen(onDeleteConfirmed: () -> Unit) {
     Log.d("Navigation", "Navigating to delete")
 
-    // Contenedor principal
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        // Tarjeta para el contenido
         Card(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(0.9f),
+            modifier = Modifier.padding(16.dp).fillMaxWidth(0.9f),
             shape = MaterialTheme.shapes.medium
         ) {
             Column(
@@ -42,7 +37,9 @@ fun DeleteScreen() {
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                Button(onClick = { /* Manejar eliminación */ }) {
+                Button(onClick = {
+                    onDeleteConfirmed() // Llamada a la función de confirmación
+                }) {
                     Text("Confirmar Eliminación")
                 }
             }
